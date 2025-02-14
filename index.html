@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #f0f0f0;
+        }
+
+        .calculator {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            width: 300px;
+        }
+
+        .display {
+            background: #f8f8f8;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: right;
+            font-size: 24px;
+            font-weight: bold;
+            border: 1px solid #ddd;
+            min-height: 70px;
+            word-wrap: break-word;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            padding: 15px;
+            font-size: 18px;
+            border: none;
+            background: #f0f0f0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #e0e0e0;
+        }
+
+        .operator {
+            background: #ff9500;
+            color: white;
+        }
+
+        .operator:hover {
+            background: #ff8000;
+        }
+
+        .equals {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .equals:hover {
+            background: #27ae60;
+        }
+
+        .clear {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .clear:hover {
+            background: #c0392b;
+        }
+
+        .function {
+            background: #3498db;
+            color: white;
+        }
+
+        .function:hover {
+            background: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="display">0</div>
+        <div class="buttons">
+            <button class="clear" onclick="clearDisplay()">C</button>
+            <button class="function" onclick="calculatePercent()">%</button>
+            <button class="operator" onclick="appendOperator('*')">×</button>
+            <button class="operator" onclick="appendOperator('/')">/</button>
+            
+            <button onclick="appendNumber('7')">7</button>
+            <button onclick="appendNumber('8')">8</button>
+            <button onclick="appendNumber('9')">9</button>
+            <button class="operator" onclick="appendOperator('-')">-</button>
+            
+            <button onclick="appendNumber('4')">4</button>
+            <button onclick="appendNumber('5')">5</button>
+            <button onclick="appendNumber('6')">6</button>
+            <button class="operator" onclick="appendOperator('+')">+</button>
+            
+            <button onclick="appendNumber('1')">1</button>
+            <button onclick="appendNumber('2')">2</button>
+            <button onclick="appendNumber('3')">3</button>
+            <button onclick="appendNumber('.')">.</button>
+            
+            <button onclick="appendNumber('0')" style="grid-column: span 3;">0</button>
+            <button class="equals" onclick="calculate()">=</button>
+        </div>
+    </div>
+
+    <script>
+        let display = document.querySelector('.display');
+        let currentInput = '0';
+        let lastOperator = '';
+        let newNumber = true;
+
+        function updateDisplay() {
+            display.textContent = currentInput;
+        }
+
+        function appendNumber(num) {
+            if (newNumber) {
+                currentInput = num;
+                newNumber = false;
+            } else {
+                if (currentInput === '0' && num !== '.') {
+                    currentInput = num;
+                } else {
+                    currentInput += num;
+                }
+            }
+            updateDisplay();
+        }
+
+        function appendOperator(op) {
+            if (!currentInput.endsWith(' ' + op + ' ')) {
+                currentInput += ' ' + op + ' ';
+                newNumber = false;
+            }
+            updateDisplay();
+        }
+
+        function clearDisplay() {
+            currentInput = '0';
+            newNumber = true;
+            updateDisplay();
+        }
+
+        function calculatePercent() {
+            try {
+                // If there's an operation pending, calculate the percentage of the first number
+                if (currentInput.includes(' ')) {
+                    let parts = currentInput.split(' ');
+                    let firstNumber = parseFloat(parts[0]);
+                    let percentage = firstNumber / 100;
+                    currentInput = percentage.toString();
+                } else {
+                    // If it's a single number, convert it to percentage
+                    let number = parseFloat(currentInput);
+                    let percentage = number / 100;
+                    currentInput = percentage.toString();
+                }
+                newNumber = true;
+                updateDisplay();
+            } catch (error) {
+                currentInput = 'Error';
+                newNumber = true;
+                updateDisplay();
+            }
+        }
+
+        function calculate() {
+            try {
+                currentInput = eval(currentInput).toString();
+                newNumber = true;
+                updateDisplay();
+            } catch (error) {
+                currentInput = 'Error';
+                newNumber = true;
+                updateDisplay();
+            }
+        }
+    </script>
+</body>
+</html>
